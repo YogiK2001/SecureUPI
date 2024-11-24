@@ -1,19 +1,30 @@
 import { useState } from "react";
+import axios from "axios";
+import { resultState } from "../store/atoms/atoms";
+import { useSetRecoilState } from "recoil";
 
 const Form = () => {
   const [formData, setFormData] = useState({
-    transactionType: "",
-    recieverOldBal: "",
-    recieverNewBal: "",
-    sendersOldBal: "",
-    senderNewBal: "",
-    transactionAmount: "",
+    type: "",
+    amount: "",
+    oldbalanceOrg: "",
+    newbalanceOrig: "",
+    oldbalanceDest: "",
+    newbalanceDest: "",
   });
+
+  const [result, setResult] = useState("");
+  const [fraudConfidence, setFraudConfidence] = useState("");
+  const [recommendation, setRecommendation] = useState("");
+
+  const setResultData = useSetRecoilState(resultState);
 
   // Handle input change
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   // Handle form submission
@@ -21,26 +32,19 @@ const Form = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      const response = await axios.post(
+        "http://localhost:5000/predict",
+        formData
+      );
+      setResultData({
+        result: response.data.result,
+        fraudConfidence: response.data.fraud_confidence,
+        recommendation: response.data.recommendation,
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        alert(`Prediction: ${data.prediction}`);
-      } else {
-        alert("Failed to get a response from the backend.");
-      }
     } catch (error) {
-      console.error("Error connecting to backend:", error);
-      alert("Error connecting to the backend. Please try again.");
+      console.error("Error:", error);
     }
   };
-
   return (
     <div className="mt-16 bg-white rounded-lg shadow-lg w-full max-w-md p-8 h-screen">
       <h1 className="text-2xl font-bold text-center mb-6">
@@ -48,18 +52,18 @@ const Form = () => {
       </h1>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
-        {/* Transaction Hour */}
+        {/* Transaction Type */}
         <div>
           <label
-            htmlFor="transaction-hour"
+            htmlFor="type"
             className="block text-sm font-medium text-gray-700"
           >
             Select the Type:
           </label>
           <select
-            id="transactionType"
-            name="transactionType"
-            value={formData.transactionType}
+            id="type"
+            name="type"
+            value={formData.type}
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
           >
@@ -72,104 +76,102 @@ const Form = () => {
           </select>
         </div>
 
-        {/* Transaction Day */}
-
-        {/* Senders */}
-        <div>
-          <label
-            htmlFor="sendersOldBal"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Senders Old Balance:
-          </label>
-          <input
-            type="text"
-            id="sendersOldBal"
-            name="sendersOldBal"
-            placeholder="Enter month"
-            value={formData.sendersOldBal}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        {/* Transaction Year */}
-        <div>
-          <label
-            htmlFor="senderNewBal"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Sender New Balance:
-          </label>
-          <input
-            type="text"
-            id="senderNewBal"
-            name="senderNewBal"
-            placeholder="Enter year"
-            value={formData.senderNewBal}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="recieverOldBal"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Recievers Old Balance
-          </label>
-          <input
-            type="text"
-            id="recieverOldBal"
-            name="recieverOldBal"
-            placeholder="Enter day"
-            value={formData.recieverOldBal}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="recieverNewBal"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Recievers Old Balance
-          </label>
-          <input
-            type="text"
-            id="recieverNewBal"
-            name="recieverNewBal"
-            placeholder="Enter day"
-            value={formData.recieverOldBal}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
         {/* Transaction Amount */}
         <div>
           <label
-            htmlFor="transaction-amount"
+            htmlFor="amount"
             className="block text-sm font-medium text-gray-700"
           >
             Transaction Amount:
           </label>
           <input
-            type="text"
-            id="transaction-amount"
-            name="transactionAmount"
+            type="number"
+            id="amount"
+            name="amount"
             placeholder="Enter amount"
-            value={formData.transactionAmount}
+            value={formData.amount}
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
 
-        {/* UPI Number */}
+        {/* Sender's Old Balance */}
+        <div>
+          <label
+            htmlFor="oldbalanceOrg"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Sender's Old Balance:
+          </label>
+          <input
+            type="number"
+            id="oldbalanceOrg"
+            name="oldbalanceOrg"
+            placeholder="Enter Sender's Old Balance"
+            value={formData.oldbalanceOrg}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
 
-        {/* Buttons */}
+        {/* Sender's New Balance */}
+        <div>
+          <label
+            htmlFor="newbalanceOrig"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Sender's New Balance:
+          </label>
+          <input
+            type="number"
+            id="newbalanceOrig"
+            name="newbalanceOrig"
+            placeholder="Enter Sender's New Balance"
+            value={formData.newbalanceOrig}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        {/* Receiver's Old Balance */}
+        <div>
+          <label
+            htmlFor="oldbalanceDest"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Receiver's Old Balance:
+          </label>
+          <input
+            type="number"
+            id="oldbalanceDest"
+            name="oldbalanceDest"
+            placeholder="Enter Receiver's Old Balance"
+            value={formData.oldbalanceDest}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        {/* Receiver's New Balance */}
+        <div>
+          <label
+            htmlFor="newbalanceDest"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Receiver's New Balance:
+          </label>
+          <input
+            type="number"
+            id="newbalanceDest"
+            name="newbalanceDest"
+            placeholder="Enter Receiver's New Balance"
+            value={formData.newbalanceDest}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        {/* Predict Button */}
         <div className="flex flex-row justify-center items-center mt-6">
           <button
             type="submit"

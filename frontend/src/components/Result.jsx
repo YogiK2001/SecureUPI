@@ -25,11 +25,11 @@ const Result = () => {
   };
 
   return (
-    <div className="flex flex-col h-50 w-50 justify-center items-center gap-5 text-4xl text-cyan-700 font-bold bg-transparent">
+    <span className="flex flex-col mt-20 h-50 w-50 justify-center items-center gap-5 text-4xl text-cyan-100 font-bold ">
       <div>
         <h1>Analysis of the Transactions</h1>
       </div>
-      <div className="flex flex-col justify-center rounded-lg p-10 items-center gap-5 bg-white">
+      <div className="flex flex-col justify-center rounded-lg p-10 mt-4 shadow-lg mb-4 items-center gap-5 bg-white">
         <h1
           className={`text-4xl ${
             result === 0 ? "text-green-600" : "text-red-600"
@@ -57,7 +57,7 @@ const Result = () => {
           />
         </div>
       </div>
-    </div>
+    </span>
   );
 };
 

@@ -8,8 +8,8 @@ const Home = () => {
       <div>
         <Form />
       </div>
-      <div className="bg-[url('http://trackolap-images-prod.s3.amazonaws.com/images/blog/5f65bc0441528e25a8532028/1600502788859.png')] h-screen bg-opacity-60  w-full bg-cover bg-center">
-        <div className="bg-stone-300">
+      <div className="bg-[url('http://trackolap-images-prod.s3.amazonaws.com/images/blog/5f65bc0441528e25a8532028/1600502788859.png')] h-screen bg-opacity-60 w-full">
+        <div>
           <Result />
         </div>
       </div>

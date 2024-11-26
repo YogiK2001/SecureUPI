@@ -1,7 +1,9 @@
 // import { useState } from "react";
 import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 const Nav = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-row justify-between items-center gap-2 w-full bg-slate-200 rounded-md p-3">
       <span className="flex flex-row justify-center items-center mt-2 px-10">
@@ -14,7 +16,10 @@ const Nav = () => {
       <nav className="flex items-center gap-6 pr-10 overflow-x-clip">
         {/* Home */}
         <div className="relative group">
-          <button className="px-2 py-2 text-gray-700 hover:text-green-500 font-medium">
+          <button
+            className="px-2 py-2 text-gray-700 hover:text-green-500 font-medium"
+            onClick={() => navigate("/predict")}
+          >
             Home
           </button>
         </div>
@@ -29,20 +34,16 @@ const Nav = () => {
               {" "}
               {/* Added spacing at top */}
               <a
-                href="#"
+                href=""
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-green-500"
-                onClick={() => {
-                  /* Add navigation logic */
-                }}
+                onClick={() => navigate("/team")}
               >
                 Team
               </a>
               <a
-                href="#"
+                href=""
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-green-500"
-                onClick={() => {
-                  /* Add navigation logic */
-                }}
+                onClick={() => () => navigate("/faculty")}
               >
                 Faculty
               </a>

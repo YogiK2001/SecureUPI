@@ -3,6 +3,8 @@
 // import viteLogo from '/vite.svg'
 import Nav from "./components/Nav";
 import Home from "./components/Home";
+import Team from "./components/Team";
+import Faculty from "./components/Faculty";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 
@@ -12,7 +14,9 @@ function App() {
       <BrowserRouter>
         <Nav />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/predict" element={<Home />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/faculty" element={<Faculty />} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>
